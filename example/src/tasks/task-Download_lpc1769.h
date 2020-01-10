@@ -9,21 +9,20 @@
 -*--------------------------------------------------------------------*/
 
 
-#ifndef _BASE_H
-#define _BASE_H 1
+#ifndef _UART0_TX_H
+#define _UART0_TX_H 1
 
 
 // ------ Public constants -----------------------------------------
+
 
 // ------ Public data type declarations ----------------------------
 
 
 
 // ------ Public function prototypes -------------------------------
-void Base_Init(void);
-void Base_Update(void);
-
-
+void Uart_Init(void);
+void  Uart_Rx_Update(void);
 #endif
 
 /*------------------------------------------------------------------*-

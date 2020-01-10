@@ -8,24 +8,38 @@
 
 -*--------------------------------------------------------------------*/
 
+#include "main.h"
 
-#ifndef _UART0_TX_H
-#define _UART0_TX_H 1
+//#ifndef SRC_TASKS_TASK_PROCESS_LPC1769_H_
+//#define SRC_TASKS_TASK_PROCESS_LPC1769_H_ 1
 
 
 // ------ Public constants -----------------------------------------
+#define RED		0
+#define	BLUE 	1
+#define GREEN	2
 
+// ------ Private constants -----------------------------------------
+#define START		0
+#define DETECT		1
+#define	CONDITION	2
+#define	OUT			3
+#define NUMBER		4
+#define FINISH		5
+
+#define SETEO	0
+#define VALUE	1
 
 // ------ Public data type declarations ----------------------------
-
+uint8_t IsConditional(uint8_t);
+uint8_t IsOutput(uint8_t);
 
 
 // ------ Public function prototypes -------------------------------
-void Uart_Init(void);
-void Uart_Tx_Update(void);
-void  Uart_Rx_Update (void);
-#endif
+void Process_Init(void);
+void Process_Update(void);
 
+//#endif /* SRC_TASKS_TASK_PROCESS_LPC1769_H_ */
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------
 -*------------------------------------------------------------------*/

@@ -13,7 +13,8 @@
 #include "../tasks/task-watchdog_lpc1769.h"
 #include "../tasks/task-heartbeat_lpc1769.h"
 #include "../tasks/task-base_lpc1769.h"
-#include "../tasks/task-Uart_lpc1769.h"
+#include "../tasks/task-Download_lpc1769.h"
+#include "../tasks/task-Process_lpc1769.h"
 
 
 // ------ Public variable ------------------------------------------
@@ -122,8 +123,14 @@ void SYSTEM_Configure_Required_Mode(void)
             // Base task Init
             Base_Init();
 
-            // Uart0_Tx task Init
+            // Uart task Init
             Uart_Init();
+
+            // Run task Init
+            Run_Init();
+
+            // Process task Init
+            Process_Init();
 
         	// Prepare for Heartbeat task
         	HEARTBEAT_Init();
@@ -139,20 +146,17 @@ void SYSTEM_Configure_Required_Mode(void)
             // Add watchdog task first
             SCH_Add_Task(WATCHDOG_Update, 0, 1, 10, 0);
 
-            SCH_Add_Task(Uart_Rx_Update, 0, 1, 100, 0);
-
             // Add example task
             SCH_Add_Task(Base_Update, 0, 1, 100, 0);
 
+            // Add example task
+            SCH_Add_Task(Uart_Rx_Update, 0, 1, 100, 0);
 
             // Add example task
-            SCH_Add_Task(Uart_Tx_Update, 1, 1, 100, 0);
+            SCH_Add_Task(Process_Update, 1, 1, 100, 0);
 
             // Add example task
-
-            // Add user tasks......
-
-            //.....
+            SCH_Add_Task(Run_Update, 1, 1, 100, 0);
 
             // Add Heartbeat task
             SCH_Add_Task(HEARTBEAT_Update, 0, 1000, 20, 0);

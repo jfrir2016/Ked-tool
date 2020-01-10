@@ -14,6 +14,7 @@
 
 
 // Links to target libraries
+#include "board.h"
 #include "chip.h"
 
 // System header
@@ -28,6 +29,11 @@
 // Monittor header
 #include "../c-tds/monittor_lp1769.h"
 
+// Monittor header
+#include "../tasks/task-base_lpc1769.h"
+
+#include "../tasks/task-Run_lpc1769.h"
+#include "../tasks/task-Process_lpc1769.h"
 
 // ------ Public constants -----------------------------------------
 
