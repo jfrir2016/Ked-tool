@@ -32,6 +32,7 @@ typedef struct act {
 void Run_Init(void);
 void Run_Update(void);
 
+void UpdateFree(void);
 void UpdateButtons(void);
 void UpdateDisplays(void);
 void UpdateLeds(void);

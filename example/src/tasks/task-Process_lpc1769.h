@@ -19,6 +19,8 @@
 #define	BLUE 	1
 #define GREEN	2
 
+#define NOFINPUTS 7
+
 // ------ Private constants -----------------------------------------
 #define START		0
 #define DETECT		1

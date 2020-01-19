@@ -70,9 +70,21 @@ void Run_Init(void)
 void Run_Update(void)
 {
 	if(STATE == RUN) {
+		UpdateFree();
 		UpdateButtons();
 		UpdateDisplays();
 		UpdateLeds();
+	}
+}
+
+void UpdateFree(){
+	Action *aux;
+
+	if(Entradas[0] != 0){ //Creo que no hace falta el if
+		for(aux = Entradas[0]; aux != 0; aux = aux->nxt){
+			*aux->Destino = 1;
+			*aux->ValorDestino = aux->Valor;
+		}
 	}
 }
 
@@ -80,27 +92,27 @@ void UpdateButtons(void){
 	uint8_t state;
 
 	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB1_PORT, PB1_PIN);
-	if(state == ValuesIn[0] && Entradas[0] != 0){
-		*Entradas[0]->Destino = 1;
-		*Entradas[0]->ValorDestino = Entradas[0]->Valor;
-	}
-
-	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB2_PORT, PB2_PIN);
 	if(state == ValuesIn[1] && Entradas[1] != 0){
 		*Entradas[1]->Destino = 1;
 		*Entradas[1]->ValorDestino = Entradas[1]->Valor;
 	}
 
-	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB3_PORT, PB3_PIN);
+	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB2_PORT, PB2_PIN);
 	if(state == ValuesIn[2] && Entradas[2] != 0){
 		*Entradas[2]->Destino = 1;
 		*Entradas[2]->ValorDestino = Entradas[2]->Valor;
 	}
 
-	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB4_PORT, PB4_PIN);
+	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB3_PORT, PB3_PIN);
 	if(state == ValuesIn[3] && Entradas[3] != 0){
 		*Entradas[3]->Destino = 1;
 		*Entradas[3]->ValorDestino = Entradas[3]->Valor;
+	}
+
+	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB4_PORT, PB4_PIN);
+	if(state == ValuesIn[4] && Entradas[4] != 0){
+		*Entradas[4]->Destino = 1;
+		*Entradas[4]->ValorDestino = Entradas[4]->Valor;
 	}
 }
 
