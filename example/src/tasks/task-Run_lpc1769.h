@@ -22,7 +22,7 @@
 // ------ Public data type declarations ----------------------------
 typedef struct act {
 	uint8_t *Destino;
-	uint8_t *ValorDestino;
+	uint8_t *DestinoDelValor;
 	uint8_t Valor;
 	struct act *nxt;
 } Action;

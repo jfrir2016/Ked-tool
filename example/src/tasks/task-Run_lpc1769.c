@@ -16,18 +16,18 @@
 
 // Task header
 // ------ Set registers ------------------------------------------
-uint8_t SetLed1 	= 1;
+uint8_t SetLed1 	= 0;
 uint8_t SetLed2 	= 0;
 uint8_t SetLed3 	= 0;
 uint8_t Display 	= 0;
 uint8_t SetMotor1	= 0;
 uint8_t SetMotor2 	= 0;
 uint8_t SetDisplay1 = 0;
-uint8_t SetDisplay2 = 1;
+uint8_t SetDisplay2 = 0;
 uint8_t SetServo 	= 0;
 
 // ------ Value registers ----------------------------------------
-uint8_t ValueLed1 	= 5;
+uint8_t ValueLed1 	= 0;
 uint8_t ValueLed2 	= 0;
 uint8_t ValueLed3 	= 0;
 uint8_t SenseMotor1	= 0;
@@ -52,7 +52,7 @@ extern uint8_t ValuesIn[6];
 
 
 // ------ Global variable -----------------------------------------
-uint8_t STATE = RUN;
+uint8_t STATE = DOWNLOAD; //RUN; TODO volver a poner RUN
 
 /*------------------------------------------------------------------*-
 
@@ -60,7 +60,11 @@ uint8_t STATE = RUN;
 -*------------------------------------------------------------------*/
 void Run_Init(void)
 {
-
+	SetLed1 	= 0;
+	ValueLed1 	= 5;
+	SetDisplay2 = 1;
+	SetDisplay1 = 1;
+	SetDisplay2 = 0;
 }
 
 /*------------------------------------------------------------------*-
@@ -83,7 +87,7 @@ void UpdateFree(){
 	if(Entradas[0] != 0){ //Creo que no hace falta el if
 		for(aux = Entradas[0]; aux != 0; aux = aux->nxt){
 			*aux->Destino = 1;
-			*aux->ValorDestino = aux->Valor;
+			*aux->DestinoDelValor = aux->Valor;
 		}
 	}
 }
@@ -94,25 +98,25 @@ void UpdateButtons(void){
 	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB1_PORT, PB1_PIN);
 	if(state == ValuesIn[1] && Entradas[1] != 0){
 		*Entradas[1]->Destino = 1;
-		*Entradas[1]->ValorDestino = Entradas[1]->Valor;
+		*Entradas[1]->DestinoDelValor = Entradas[1]->Valor;
 	}
 
 	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB2_PORT, PB2_PIN);
 	if(state == ValuesIn[2] && Entradas[2] != 0){
 		*Entradas[2]->Destino = 1;
-		*Entradas[2]->ValorDestino = Entradas[2]->Valor;
+		*Entradas[2]->DestinoDelValor = Entradas[2]->Valor;
 	}
 
 	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB3_PORT, PB3_PIN);
 	if(state == ValuesIn[3] && Entradas[3] != 0){
 		*Entradas[3]->Destino = 1;
-		*Entradas[3]->ValorDestino = Entradas[3]->Valor;
+		*Entradas[3]->DestinoDelValor = Entradas[3]->Valor;
 	}
 
 	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB4_PORT, PB4_PIN);
 	if(state == ValuesIn[4] && Entradas[4] != 0){
 		*Entradas[4]->Destino = 1;
-		*Entradas[4]->ValorDestino = Entradas[4]->Valor;
+		*Entradas[4]->DestinoDelValor = Entradas[4]->Valor;
 	}
 }
 

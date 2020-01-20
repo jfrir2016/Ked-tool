@@ -140,37 +140,38 @@ void Process_Update(void)
 				if(IsOutput(data)){
 					Type = OUT;
 				}
+				if(IsJump(data)){
+					indx = 0;
+				}
 				hard = data;
 				cont = 0;
 				break;
 			case CONDITION:
-				if(cont == 0){
+				cont++;
+				if(cont == 1)
 					indx = data - 'N';
-					cont++;
-				}
-				if(cont == 1){
+
+				if(cont == 2)
 					indx = indx + data - '1';
-					cont++;
-				}
-				if(cont == 2){
+
+				if(cont == 3){
 					ValuesIn[indx] = data - '0';
 					cont = 0;
 					Type = DETECT;
 				}
 				break;
 			case OUT:
-				if (cont == 0){
+				cont++;
+				if (cont == 1){
 					dirSet = DirSalidas[(hard -'G') + (data - '1')][SETEO];
 					dirValue = DirSalidas[(hard -'G') + (data - '1')][VALUE];
-					cont++;
 					break;
 				}
-				if(cont == 1){
+				if(cont == 2){
 					Value = (data - '0');
-					cont = 0;
 					new = malloc(sizeof(Action));
 					new->Destino = dirSet;
-					new->ValorDestino = dirValue;
+					new->DestinoDelValor = dirValue;
 					new->Valor = Value;
 					new->nxt = 0;
 					if(Entradas[indx]){
@@ -180,6 +181,7 @@ void Process_Update(void)
 					else{
 						Entradas[indx] = new;
 					}
+					cont = 0;
 					Type = DETECT;
 				}
 				break;
@@ -193,14 +195,21 @@ void Process_Update(void)
 
 uint8_t IsConditional(uint8_t data){
 	uint8_t ret = 0;
-	if(data == 'I' || data == 'R' || data == 'W'){
+	if(data == 'W' || data == 'Y' || data == 'Z'){
 		ret = 1;
 	}
 	return ret;
 }
 
 uint8_t IsOutput(uint8_t data){
-	if(data == 'M' || data == 'Z' || data == 'L' || data == 'G'){
+	if(data == 'G' || data == 'I' || data == 'K' || data == 'L'){
+		return 1;
+	}
+	return 0;
+}
+
+uint8_t IsJump(uint8_t data){
+	if(data == 'X'){
 		return 1;
 	}
 	return 0;
