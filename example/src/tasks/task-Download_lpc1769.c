@@ -69,13 +69,19 @@ void Uart_Init(void)
 void Uart_Rx_Update(void)
 {
 	uint8_t dataIn;
+	static uint8_t letra = 0;
+	char *String = {"CYO11L13L24XG17F"};
 
-	while(((Chip_UART_ReadLineStatus(UART_Def) & UART_LSR_RDR) != 0)) {
-		dataIn = Chip_UART_ReadByte(UART_Def);
+//	while(((Chip_UART_ReadLineStatus(UART_Def) & UART_LSR_RDR) != 0)) {
+//		dataIn = Chip_UART_ReadByte(UART_Def);
+	if(STATE == DOWNLOAD){							//TODO Eliminar esto
+		dataIn = (uint8_t) String[letra];			//TODO    "      "
+		letra++;									//TODO    "     letra
 		RingBuffer_Insert(&rxring, &dataIn);
 		STATE = DOWNLOAD;
 		if (dataIn == 'F'){
 			STATE = PROCESS;
+			letra = 0;
 		}
 	}
 }

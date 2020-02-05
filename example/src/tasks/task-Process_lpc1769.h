@@ -19,12 +19,14 @@
 #define	BLUE 	1
 #define GREEN	2
 
+#define NOFINPUTS 7
+
 // ------ Private constants -----------------------------------------
 #define START		0
 #define DETECT		1
 #define	CONDITION	2
 #define	OUT			3
-#define NUMBER		4
+#define JUMP		4
 #define FINISH		5
 
 #define SETEO	0
@@ -33,6 +35,7 @@
 // ------ Public data type declarations ----------------------------
 uint8_t IsConditional(uint8_t);
 uint8_t IsOutput(uint8_t);
+uint8_t IsJump(uint8_t);
 
 
 // ------ Public function prototypes -------------------------------

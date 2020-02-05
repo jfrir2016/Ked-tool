@@ -51,8 +51,8 @@ uint8_t Type;
 
 uint8_t *DirSalidas[8][2];
 
-Action* Entradas[6];
-uint8_t ValuesIn[6];
+Action* Entradas[NOFINPUTS];
+uint8_t ValuesIn[NOFINPUTS];
 
 // ------ Private data type ----------------------------------------
 uint8_t *dirSet = 0;
@@ -73,6 +73,8 @@ extern RINGBUFF_T rxring;
 -*------------------------------------------------------------------*/
 void Process_Init(void)
 {
+	uint8_t i;
+
 	DirSalidas[0][0]	= &SetDisplay1;
 	DirSalidas[0][1] 	= &ValueDisplay1;
 	DirSalidas[1][0]	= &SetDisplay2;
@@ -92,6 +94,11 @@ void Process_Init(void)
 	DirSalidas[5][1] 	= &ValueLed1;
 	DirSalidas[6][1] 	= &ValueLed2;
 	DirSalidas[7][1] 	= &ValueLed3;
+
+	for(i = 0; i < NOFINPUTS; i++){
+		Entradas[i] = 0;
+		ValuesIn[i] = 0;
+	}
 }
 
 /*------------------------------------------------------------------*-
@@ -101,6 +108,7 @@ void Process_Init(void)
 void Process_Update(void)
 {
 	uint8_t data;
+	Action *new, *aux;
 	static uint8_t cont = 0;
 	static uint8_t hard = 0;
 	static uint8_t indx = 0;
@@ -132,39 +140,48 @@ void Process_Update(void)
 				if(IsOutput(data)){
 					Type = OUT;
 				}
+				if(IsJump(data)){
+					indx = 0;
+				}
 				hard = data;
 				cont = 0;
 				break;
 			case CONDITION:
-				if(cont == 0){
-					indx = data - 'O';
-					cont++;
-				}
-				if(cont == 1){
+				cont++;
+				if(cont == 1)
+					indx = data - 'N';
+
+				if(cont == 2)
 					indx = indx + data - '1';
-					Entradas[indx] = malloc(sizeof(Action));
-					cont++;
-				}
-				if(cont == 2){
+
+				if(cont == 3){
 					ValuesIn[indx] = data - '0';
 					cont = 0;
 					Type = DETECT;
 				}
 				break;
 			case OUT:
-				if (cont == 0){
+				cont++;
+				if (cont == 1){
 					dirSet = DirSalidas[(hard -'G') + (data - '1')][SETEO];
 					dirValue = DirSalidas[(hard -'G') + (data - '1')][VALUE];
-					cont++;
 					break;
 				}
-				if(cont == 1){
+				if(cont == 2){
 					Value = (data - '0');
+					new = malloc(sizeof(Action));
+					new->Destino = dirSet;
+					new->DestinoDelValor = dirValue;
+					new->Valor = Value;
+					new->nxt = 0;
+					if(Entradas[indx]){
+						for(aux = Entradas[indx]; aux->nxt != 0; aux = aux->nxt);
+						aux->nxt = new;
+					}
+					else{
+						Entradas[indx] = new;
+					}
 					cont = 0;
-					Entradas[indx]->Destino = dirSet;
-					Entradas[indx]->ValorDestino = dirValue;
-					Entradas[indx]->Valor = Value;
-					Entradas[indx]->nxt = 0;
 					Type = DETECT;
 				}
 				break;
@@ -178,14 +195,21 @@ void Process_Update(void)
 
 uint8_t IsConditional(uint8_t data){
 	uint8_t ret = 0;
-	if(data == 'I' || data == 'R' || data == 'W'){
+	if(data == 'W' || data == 'Y' || data == 'Z'){
 		ret = 1;
 	}
 	return ret;
 }
 
 uint8_t IsOutput(uint8_t data){
-	if(data == 'M' || data == 'Z' || data == 'L' || data == 'G'){
+	if(data == 'G' || data == 'I' || data == 'K' || data == 'L'){
+		return 1;
+	}
+	return 0;
+}
+
+uint8_t IsJump(uint8_t data){
+	if(data == 'X'){
 		return 1;
 	}
 	return 0;
