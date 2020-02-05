@@ -16,6 +16,7 @@
 // Links to target libraries
 #include "board.h"
 #include "chip.h"
+#include <stdlib.h>
 
 // System header
 #include "../c-tds/system_lpc1769.h"

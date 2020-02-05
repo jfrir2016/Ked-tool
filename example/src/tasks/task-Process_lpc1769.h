@@ -20,6 +20,8 @@
 #define GREEN	2
 
 #define NOFINPUTS 7
+#define NOFOUTPUTS 8
+#define NOFSYSTEMS 20
 
 // ------ Private constants -----------------------------------------
 #define START		0
@@ -36,6 +38,8 @@
 uint8_t IsConditional(uint8_t);
 uint8_t IsOutput(uint8_t);
 uint8_t IsJump(uint8_t);
+uint8_t IsLogic(uint8_t data);
+void Update(uint8_t*);
 
 
 // ------ Public function prototypes -------------------------------

@@ -18,6 +18,7 @@
 #define DOWNLOAD	1
 #define PROCESS		2
 
+#define INPUTSSIMULTANEOS 5
 
 // ------ Public data type declarations ----------------------------
 typedef struct act {
@@ -26,6 +27,13 @@ typedef struct act {
 	uint8_t Valor;
 	struct act *nxt;
 } Action;
+
+typedef struct sys {
+	uint8_t Previous;
+	uint8_t Inputs[INPUTSSIMULTANEOS];
+	uint8_t ValuesIn[INPUTSSIMULTANEOS];
+	Action  *Actions;
+} System;
 
 
 // ------ Public function prototypes -------------------------------
