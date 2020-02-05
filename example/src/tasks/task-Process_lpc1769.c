@@ -169,7 +169,7 @@ void Process_Update(void)
 				}
 				if(cont == 2){
 					Value = (data - '0');
-					new = malloc(sizeof(Action));
+					new = (Action*) malloc(sizeof(Action));
 					new->Destino = dirSet;
 					new->DestinoDelValor = dirValue;
 					new->Valor = Value;
