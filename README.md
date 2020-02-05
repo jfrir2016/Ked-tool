@@ -1,1 +1,168 @@
 # Ked-tool
+
+### board.h
+//Display D2
+#define SEG_A_D2_PORT		0
+#define SEG_A_D2_PIN		23
+#define SEG_B_D2_PORT		0
+#define SEG_B_D2_PIN		26
+#define SEG_C_D2_PORT		0
+#define SEG_C_D2_PIN		25
+#define SEG_D_D2_PORT		0
+#define SEG_D_D2_PIN		24
+
+//Display S1
+#define SEG_A_D1_PORT		1
+#define SEG_A_D1_PIN		8
+#define SEG_B_D1_PORT		1
+#define SEG_B_D1_PIN		0
+#define SEG_C_D1_PORT		1
+#define SEG_C_D1_PIN		1
+#define SEG_D_D1_PORT		1
+#define SEG_D_D1_PIN		4
+
+//LED RGB_1
+#define LED1_RED_PORT		0
+#define LED1_RED_PIN		17
+#define LED1_BLUE_PORT		0
+#define LED1_BLUE_PIN		18
+#define LED1_GREEN_PORT		2
+#define LED1_GREEN_PIN		8
+
+//LED RGB_2
+#define LED2_GREEN_PORT		0
+#define LED2_GREEN_PIN		19
+#define LED2_RED_PORT		0
+#define LED2_RED_PIN		20
+#define LED2_BLUE_PORT		0
+#define LED2_BLUE_PIN		21
+
+//LED RGB_3
+#define LED3_GREEN_PORT		2
+#define LED3_GREEN_PIN		3
+#define LED3_RED_PORT		2
+#define LED3_RED_PIN		4
+#define LED3_BLUE_PORT		2
+#define LED3_BLUE_PIN		5
+
+//LEDS_IR
+#define EMISOR_IR1_PORT		2
+#define EMISOR_IR1_PIN		6
+#define EMISOR_IR2_PORT		2
+#define EMISOR_IR2_PIN		7
+
+//IR_FOTOTR
+#define TR_IR1_PORT			1
+#define TR_IR1_PIN			9
+#define TR_IR2_PORT			1
+#define TR_IR2_PIN			10
+
+//BUTTONS
+#define PB1_PORT			0
+#define PB1_PIN				8
+#define PB2_PORT			0
+#define PB2_PIN				6
+#define PB3_PORT			0
+#define PB3_PIN				7
+#define PB4_PORT			0
+#define PB4_PIN				5
+
+## board_sysinit.c
+/* Pin muxing configuration */
+STATIC const PINMUX_GRP_T pinmuxing[] = {
+	{0,  23,  IOCON_MODE_INACT | IOCON_FUNC0}, 	//DISPLAY2
+	{0,  24,  IOCON_MODE_INACT | IOCON_FUNC0},
+	{0,  25,  IOCON_MODE_INACT | IOCON_FUNC0},
+	{0,  26,  IOCON_MODE_INACT | IOCON_FUNC0},
+
+	{1,  1,  IOCON_MODE_INACT | IOCON_FUNC0}, 	//DISPLAY1
+	{1,  0,  IOCON_MODE_INACT | IOCON_FUNC0},
+	{1,  4,  IOCON_MODE_INACT | IOCON_FUNC0},
+	{1,  8,  IOCON_MODE_INACT | IOCON_FUNC0},
+
+	{2,  6,  IOCON_MODE_INACT | IOCON_FUNC0},	//Emisor_IR1
+	{2,  7,  IOCON_MODE_INACT | IOCON_FUNC0},	//Emisor_IR2
+
+	{2,  3,  IOCON_MODE_INACT | IOCON_FUNC0},	//Green_LED1
+	{2,  4,  IOCON_MODE_INACT | IOCON_FUNC0},	//Red_LED1
+	{2,  5,  IOCON_MODE_INACT | IOCON_FUNC0},	//Blue_LED1
+
+	{0,  19,  IOCON_MODE_INACT | IOCON_FUNC0},	//Green_LED2
+	{0,  20,  IOCON_MODE_INACT | IOCON_FUNC0},	//Red_LED2
+	{0,  21,  IOCON_MODE_INACT | IOCON_FUNC0},	//Blue_LED2
+
+	{0,  17,  IOCON_MODE_INACT | IOCON_FUNC0},	//Green_LED3
+	{0,  18,  IOCON_MODE_INACT | IOCON_FUNC0},	//Red_LED3
+	{2,  8,  IOCON_MODE_INACT | IOCON_FUNC0},	//Blue_LED3
+
+	{0,  5,  IOCON_MODE_INACT | IOCON_FUNC0},	//PB1
+	{0,  6,  IOCON_MODE_INACT | IOCON_FUNC0},	//PB2
+	{0,  7,  IOCON_MODE_INACT | IOCON_FUNC0},	//PB3
+	{0,  8,  IOCON_MODE_INACT | IOCON_FUNC0},	//PB4
+
+	{1,  9,  IOCON_MODE_INACT | IOCON_FUNC0},	//Transistor_IR1
+	{1,  10,  IOCON_MODE_INACT | IOCON_FUNC0},	//Transistor_IR2
+};
+
+## board.c
+void Board_HW_Init(void)
+{
+	//INICIALIZACION DE LAS SALIDAS
+	//DISPLAY2
+	Chip_GPIO_WriteDirBit(LPC_GPIO, SEG_A_D2_PORT, SEG_A_D2_PIN, true);
+	Chip_GPIO_WriteDirBit(LPC_GPIO, SEG_B_D2_PORT, SEG_B_D2_PIN, true);
+	Chip_GPIO_WriteDirBit(LPC_GPIO, SEG_C_D2_PORT, SEG_C_D2_PIN, true);
+	Chip_GPIO_WriteDirBit(LPC_GPIO, SEG_D_D2_PORT, SEG_D_D2_PIN, true);
+	//DISPLAY1
+	Chip_GPIO_WriteDirBit(LPC_GPIO, SEG_A_D1_PORT, SEG_A_D1_PIN, true);
+	Chip_GPIO_WriteDirBit(LPC_GPIO, SEG_B_D1_PORT, SEG_B_D1_PIN, true);
+	Chip_GPIO_WriteDirBit(LPC_GPIO, SEG_C_D1_PORT, SEG_C_D1_PIN, true);
+	Chip_GPIO_WriteDirBit(LPC_GPIO, SEG_D_D1_PORT, SEG_D_D1_PIN, true);
+	//LED_RGB1
+	Chip_GPIO_WriteDirBit(LPC_GPIO, LED1_RED_PORT, LED1_RED_PIN, true);
+	Chip_GPIO_WriteDirBit(LPC_GPIO, LED1_GREEN_PORT, LED1_GREEN_PIN, true);
+	Chip_GPIO_WriteDirBit(LPC_GPIO, LED1_BLUE_PORT, LED1_BLUE_PIN, true);
+	//LED_RGB2
+	Chip_GPIO_WriteDirBit(LPC_GPIO, LED2_RED_PORT, LED2_RED_PIN, true);
+	Chip_GPIO_WriteDirBit(LPC_GPIO, LED2_GREEN_PORT, LED2_GREEN_PIN, true);
+	Chip_GPIO_WriteDirBit(LPC_GPIO, LED2_BLUE_PORT, LED2_BLUE_PIN, true);
+	//LED_RGB3
+	Chip_GPIO_WriteDirBit(LPC_GPIO, LED3_RED_PORT, LED3_RED_PIN, true);
+	Chip_GPIO_WriteDirBit(LPC_GPIO, LED3_GREEN_PORT, LED3_GREEN_PIN, true);
+	Chip_GPIO_WriteDirBit(LPC_GPIO, LED3_BLUE_PORT, LED3_BLUE_PIN, true);
+	//LEDS_IR
+	Chip_GPIO_WriteDirBit(LPC_GPIO, EMISOR_IR1_PORT, EMISOR_IR1_PIN, true);
+	Chip_GPIO_WriteDirBit(LPC_GPIO, EMISOR_IR2_PORT, EMISOR_IR2_PIN, true);
+	//PB
+	Chip_GPIO_WriteDirBit(LPC_GPIO, PB1_PORT, PB1_PIN, false);
+	Chip_GPIO_WriteDirBit(LPC_GPIO, PB2_PORT, PB2_PIN, false);
+	Chip_GPIO_WriteDirBit(LPC_GPIO, PB3_PORT, PB3_PIN, false);
+	Chip_GPIO_WriteDirBit(LPC_GPIO, PB4_PORT, PB4_PIN, false);
+}
+
+void Board_HW_Set(){
+	Chip_GPIO_WritePortBit(LPC_GPIO, LED1_RED_PORT, LED1_RED_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, LED2_RED_PORT, LED2_RED_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, LED3_RED_PORT, LED3_RED_PIN, false);
+
+	Chip_GPIO_WritePortBit(LPC_GPIO, LED2_GREEN_PORT, LED2_GREEN_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, LED3_GREEN_PORT, LED3_GREEN_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, LED1_GREEN_PORT, LED1_GREEN_PIN, false);
+
+	Chip_GPIO_WritePortBit(LPC_GPIO, LED2_BLUE_PORT, LED2_BLUE_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, LED3_BLUE_PORT, LED3_BLUE_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, LED1_BLUE_PORT, LED1_BLUE_PIN, false);
+
+	Chip_GPIO_WritePortBit(LPC_GPIO, EMISOR_IR1_PORT, EMISOR_IR1_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, EMISOR_IR2_PORT, EMISOR_IR2_PIN, false);
+
+	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_A_D2_PORT, SEG_A_D2_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_B_D2_PORT, SEG_B_D2_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_C_D2_PORT, SEG_C_D2_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_D_D2_PORT, SEG_D_D2_PIN, false);
+
+	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_A_D1_PORT, SEG_A_D1_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_B_D1_PORT, SEG_B_D1_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_C_D1_PORT, SEG_C_D1_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_D_D1_PORT, SEG_D_D1_PIN, false);
+}
