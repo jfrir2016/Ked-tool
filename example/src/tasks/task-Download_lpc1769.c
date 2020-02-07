@@ -46,7 +46,7 @@ extern uint8_t STATE;
 
     Uart_Init()
 -*------------------------------------------------------------------*/
-void Uart_Init(void)
+void Uart_Rx_Init(void)
 {
 
 	Chip_IOCON_PinMux(LPC_IOCON, 0, 0, IOCON_MODE_INACT, IOCON_FUNC2);	// P0.2 as Txd0

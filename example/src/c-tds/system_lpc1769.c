@@ -12,9 +12,6 @@
 #include "../main/main.h"
 #include "../tasks/task-watchdog_lpc1769.h"
 #include "../tasks/task-heartbeat_lpc1769.h"
-#include "../tasks/task-base_lpc1769.h"
-#include "../tasks/task-Download_lpc1769.h"
-#include "../tasks/task-Process_lpc1769.h"
 
 
 // ------ Public variable ------------------------------------------
@@ -120,11 +117,8 @@ void SYSTEM_Configure_Required_Mode(void)
             // Set up Timer 0 as MoniTTor unit
             MONITTOR_I_Init();
 
-            // Base task Init
-            Base_Init();
-
             // Uart task Init
-            Uart_Init();
+            Uart_Rx_Init();
 
             // Run task Init
             Run_Init();
@@ -146,16 +140,13 @@ void SYSTEM_Configure_Required_Mode(void)
             // Add watchdog task first
             SCH_Add_Task(WATCHDOG_Update, 0, 1, 10, 0);
 
-            // Add example task
-            SCH_Add_Task(Base_Update, 0, 1, 100, 0);
-
-            // Add example task
+            // Add Uart task
             SCH_Add_Task(Uart_Rx_Update, 0, 1, 100, 0);
 
-            // Add example task
+            // Add Process task
             SCH_Add_Task(Process_Update, 1, 1, 100, 0);
 
-            // Add example task
+            // Add Run task
             SCH_Add_Task(Run_Update, 1, 1, 100, 0);
 
             // Add Heartbeat task

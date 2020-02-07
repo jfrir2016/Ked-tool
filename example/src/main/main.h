@@ -30,11 +30,10 @@
 // Monittor header
 #include "../c-tds/monittor_lp1769.h"
 
-// Monittor header
-#include "../tasks/task-base_lpc1769.h"
-
+// Tasks header
 #include "../tasks/task-Run_lpc1769.h"
 #include "../tasks/task-Process_lpc1769.h"
+#include "../tasks/task-Download_lpc1769.h"
 
 // ------ Public constants -----------------------------------------
 
