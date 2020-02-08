@@ -28,8 +28,8 @@
 // Heartbeat LED
 // Connected to "LED2" on LPC1769 board
 // Port 0, Pin 22
-#define HEARTBEAT_LED_PORT (0)
-#define HEARTBEAT_LED_PIN (22)
+#define HEARTBEAT_LED_PORT 2//(0)
+#define HEARTBEAT_LED_PIN 13//(22)
 #define HEARTBEAT_LED_PIN_MODE (IOCON_MODE_INACT)
 #define HEARTBEAT_LED_PIN_FUNC (IOCON_FUNC0)
 

@@ -132,7 +132,8 @@ void Process_Update(void)
 				break;
 			case DETECT:
 				if(data == 'F'){
-					Type = FINISH;
+					Type = START;
+					STATE = RUN;
 				}
 				if(IsConditional(data)){
 					Type = CONDITION;
@@ -185,9 +186,6 @@ void Process_Update(void)
 					Type = DETECT;
 				}
 				break;
-			case FINISH:
-				Type = START;
-				STATE = RUN;
 			}
 		}
 	}

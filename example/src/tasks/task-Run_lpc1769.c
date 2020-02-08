@@ -60,11 +60,10 @@ uint8_t STATE = DOWNLOAD; //RUN; TODO volver a poner RUN
 -*------------------------------------------------------------------*/
 void Run_Init(void)
 {
-	SetLed1 	= 0;
+	SetLed1 	= 1;
 	ValueLed1 	= 5;
 	SetDisplay2 = 1;
 	SetDisplay1 = 1;
-	SetDisplay2 = 0;
 }
 
 /*------------------------------------------------------------------*-

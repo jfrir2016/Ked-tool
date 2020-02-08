@@ -90,6 +90,9 @@ void SYSTEM_Configure_Required_Mode(void)
 	Chip_GPIO_Init(LPC_GPIO);
 	Chip_IOCON_Init(LPC_IOCON);
 
+	Board_HW_Init();
+	Board_HW_Set();
+
 	switch (System_mode_G)
 	{
         default: // Default to "FAIL_SILENT"
