@@ -93,29 +93,38 @@ void UpdateFree(){
 
 void UpdateButtons(void){
 	uint8_t state;
+	Action *aux;
 
 	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB1_PORT, PB1_PIN);
 	if(state == ValuesIn[1] && Entradas[1] != 0){
-		*Entradas[1]->Destino = 1;
-		*Entradas[1]->DestinoDelValor = Entradas[1]->Valor;
+		for(aux = Entradas[1]; aux != 0; aux = aux->nxt){
+			*aux->Destino = 1;
+			*aux->DestinoDelValor = aux->Valor;
+		}
 	}
 
 	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB2_PORT, PB2_PIN);
 	if(state == ValuesIn[2] && Entradas[2] != 0){
-		*Entradas[2]->Destino = 1;
-		*Entradas[2]->DestinoDelValor = Entradas[2]->Valor;
+		for(aux = Entradas[1]; aux != 0; aux = aux->nxt){
+			*aux->Destino = 1;
+			*aux->DestinoDelValor = aux->Valor;
+		}
 	}
 
 	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB3_PORT, PB3_PIN);
 	if(state == ValuesIn[3] && Entradas[3] != 0){
-		*Entradas[3]->Destino = 1;
-		*Entradas[3]->DestinoDelValor = Entradas[3]->Valor;
+		for(aux = Entradas[3]; aux != 0; aux = aux->nxt){
+			*aux->Destino = 1;
+			*aux->DestinoDelValor = aux->Valor;
+		}
 	}
 
 	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB4_PORT, PB4_PIN);
 	if(state == ValuesIn[4] && Entradas[4] != 0){
-		*Entradas[4]->Destino = 1;
-		*Entradas[4]->DestinoDelValor = Entradas[4]->Valor;
+		for(aux = Entradas[4]; aux != 0; aux = aux->nxt){
+			*aux->Destino = 1;
+			*aux->DestinoDelValor = aux->Valor;
+		}
 	}
 }
 
@@ -127,27 +136,27 @@ void UpdateLeds(void){
 		blue = ValueLed1 & (1<<1);
 		green = ValueLed1 & (1<<0);
 
-		Chip_GPIO_WritePortBit(LPC_GPIO, LED1_RED_PORT, LED1_RED_PIN, red);
-		Chip_GPIO_WritePortBit(LPC_GPIO, LED1_BLUE_PORT, LED1_BLUE_PIN, blue);
-		Chip_GPIO_WritePortBit(LPC_GPIO, LED1_GREEN_PORT, LED1_GREEN_PIN, green);
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED1_RED_PORT, LED1_RED_PIN, !red);
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED1_BLUE_PORT, LED1_BLUE_PIN, !blue);
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED1_GREEN_PORT, LED1_GREEN_PIN, !green);
 	}
 	if(SetLed2){
 		red = ValueLed2 & (1<<2);
 		blue = ValueLed2 & (1<<1);
 		green = ValueLed2 & (1<<0);
 
-		Chip_GPIO_WritePortBit(LPC_GPIO, LED2_RED_PORT, LED2_RED_PIN, red);
-		Chip_GPIO_WritePortBit(LPC_GPIO, LED2_BLUE_PORT, LED2_BLUE_PIN, blue);
-		Chip_GPIO_WritePortBit(LPC_GPIO, LED2_GREEN_PORT, LED2_GREEN_PIN, green);
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED2_RED_PORT, LED2_RED_PIN, !red);
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED2_BLUE_PORT, LED2_BLUE_PIN, !blue);
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED2_GREEN_PORT, LED2_GREEN_PIN, !green);
 	}
 	if(SetLed3){
 		red = ValueLed3 & (1<<2);
 		blue = ValueLed3 & (1<<1);
 		green = ValueLed3 & (1<<0);
 
-		Chip_GPIO_WritePortBit(LPC_GPIO, LED3_RED_PORT, LED3_RED_PIN, red);
-		Chip_GPIO_WritePortBit(LPC_GPIO, LED3_BLUE_PORT, LED3_BLUE_PIN, blue);
-		Chip_GPIO_WritePortBit(LPC_GPIO, LED3_GREEN_PORT, LED3_GREEN_PIN, green);
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED3_RED_PORT, LED3_RED_PIN, !red);
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED3_BLUE_PORT, LED3_BLUE_PIN, !blue);
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED3_GREEN_PORT, LED3_GREEN_PIN, !green);
 	}
 	return;
 }

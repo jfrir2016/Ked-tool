@@ -110,7 +110,8 @@
 
 
 // ------ Public function prototypes -------------------------------
-
+void Board_HW_Set(void);
+void Board_HW_Init(void);
 
 #endif
 
