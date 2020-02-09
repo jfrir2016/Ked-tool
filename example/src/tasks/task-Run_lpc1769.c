@@ -45,8 +45,8 @@ uint8_t *ActionSensor1	= 0;
 uint8_t *ActionSensor2 	= 0;
 
 // ------ External variable -----------------------------------------
-extern Action* Entradas[6];
-extern uint8_t ValuesIn[6];
+extern Action* Entradas[NOFINPUTS];
+extern uint8_t ValuesIn[NOFINPUTS];
 
 // ------ Private data type ----------------------------------------
 
