@@ -112,17 +112,19 @@ void Process_Update(void)
 	Action *new, *aux;
 	static uint8_t Type = START;
 	static uint8_t cont = 0;
-	static uint8_t hard = 0, and = FALSE;
-	static uint8_t indx = 0;
+	static uint8_t outputType = 0, and = FALSE;
+	static uint8_t indx = 0, conditionResult = TRUE;
 	static uint8_t in = 0, inNumber = 0;
 
 	//TODO implementar maquina de estados para procesar 					ok!
-	//TODO refrescar los registros cuando se inicia el proceso
-
+	//TODO refrescar los registros cuando se inicia el proceso y
+	//     borrar el vector Program
 	//TODO muchas salidas en un solo condicional 							ok!
 	//TODO salidas sin condicional 											ok!
-	//TODO poder poner un condicional dentro de otro
-	//TODO implementar AND y OR
+	//TODO if y else														ok!
+	//TODO poder poner un condicional dentro de otro						ok!
+	//TODO implementar AND
+	//TODO implementar OR
 	//TODO implementar while, repeat, delay
 
 	if(STATE == PROCESS){
@@ -154,9 +156,11 @@ void Process_Update(void)
 					Type = CONDITION;
 				}
 				if(IsJump(data)){
-					indx = Program[indx].Previous;
+					conditionResult = !conditionResult;
+					if (conditionResult)
+						indx = Program[indx].Previous;
 				}
-				hard = data;
+				outputType = data;
 				cont = 0;
 				break;
 			case CONDITION:
@@ -186,8 +190,8 @@ void Process_Update(void)
 			case OUT: //TODO ver salidas particulares
 				cont++;
 				if (cont == 1){
-					dirSet = DirSalidas[(hard -'G') + (data - '1')][SETEO];
-					dirValue = DirSalidas[(hard -'G') + (data - '1')][VALUE];
+					dirSet = DirSalidas[(outputType -'G') + (data - '1')][SETEO];
+					dirValue = DirSalidas[(outputType -'G') + (data - '1')][VALUE];
 					break;
 				}
 				if(cont == 2){
@@ -197,12 +201,12 @@ void Process_Update(void)
 					new->DestinoDelValor = dirValue;
 					new->Valor = Value;
 					new->nxt = 0;
-					if(Program[indx].Actions){
-						for(aux = Program[indx].Actions; aux->nxt != 0; aux = aux->nxt);
+					if(Program[indx].Actions[conditionResult]){
+						for(aux = Program[indx].Actions[conditionResult]; aux->nxt != 0; aux = aux->nxt);
 						aux->nxt = new;
 					}
 					else{
-						Program[indx].Actions = new;
+						Program[indx].Actions[conditionResult] = new;
 					}
 					cont = 0;
 					Type = DETECT;
@@ -213,9 +217,9 @@ void Process_Update(void)
 	}
 }
 
-uint8_t Detection(uint8_t data){
-
-}
+//uint8_t Detection(uint8_t data){
+//
+//}
 
 uint8_t IsConditional(uint8_t data){
 	uint8_t ret = 0;
@@ -247,7 +251,8 @@ uint8_t IsLogic(uint8_t data){
 }
 
 void Update(uint8_t *i){
-	for(; Program[*i].Inputs[0] != 0; *i++);
+	(*i)++;
+	for(; Program[*i].Inputs[0] != 0; (*i)++);
 }
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------

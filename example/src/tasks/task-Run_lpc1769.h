@@ -20,6 +20,13 @@
 
 #define INPUTSSIMULTANEOS 5
 
+#define BUTTON1		1
+#define BUTTON2		2
+#define	BUTTON3		3
+#define	BUTTON4		4
+#define SENSOR1		5
+#define SENSOR2		6
+
 // ------ Public data type declarations ----------------------------
 typedef struct act {
 	uint8_t *Destino;
@@ -32,7 +39,7 @@ typedef struct sys {
 	uint8_t Previous;
 	uint8_t Inputs[INPUTSSIMULTANEOS];
 	uint8_t ValuesIn[INPUTSSIMULTANEOS];
-	Action  *Actions;
+	Action*	Actions[2];
 } System;
 
 
@@ -40,8 +47,11 @@ typedef struct sys {
 void Run_Init(void);
 void Run_Update(void);
 
+void UpdateProgram(void);
 void UpdateFree(void);
-void UpdateButtons(void);
+Bool ComplyAllConditions(uint8_t);
+Bool ReadInput(uint8_t);
+
 void UpdateDisplays(void);
 void UpdateLeds(void);
 
