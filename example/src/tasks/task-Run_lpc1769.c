@@ -78,6 +78,7 @@ void Run_Update(void)
 
 		UpdateDisplays();
 		UpdateLeds();
+		//UpdateMotors(); TODO implementar
 	}
 }
 

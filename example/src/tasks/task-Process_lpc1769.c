@@ -108,13 +108,12 @@ void Process_Init(void)
 -*------------------------------------------------------------------*/
 void Process_Update(void)
 {
-	uint8_t data, prev, i;
+	uint8_t data, prev, i, conditionResult;
 	Action *new, *aux;
 	static uint8_t Type = START;
-	static uint8_t cont = 0;
-	static uint8_t outputType = 0, and = FALSE;
-	static uint8_t indx = 0, conditionResult = TRUE;
-	static uint8_t in = 0, inNumber = 0;
+	static uint8_t cont = 0, outputType = 0;
+	static uint8_t and = FALSE;
+	static uint8_t indx = 0, in = 0, inNumber = 0;
 
 	//TODO implementar maquina de estados para procesar 					ok!
 	//TODO refrescar los registros cuando se inicia el proceso y
@@ -123,14 +122,14 @@ void Process_Update(void)
 	//TODO salidas sin condicional 											ok!
 	//TODO if y else														ok!
 	//TODO poder poner un condicional dentro de otro						ok!
-	//TODO implementar AND
+	//TODO implementar AND													ok!
 	//TODO implementar OR
 	//TODO implementar while, repeat, delay
 
 	if(STATE == PROCESS){
 		if(RingBuffer_Pop(&rxring, &data)){
 
-			switch (Type){
+			switch (Type){				//C YO10 A O20 L10 X L11 X YO30 L34 X X F
 			case START:
 				if(data == 'C'){
 					Type = DETECT;
@@ -146,19 +145,23 @@ void Process_Update(void)
 					prev = indx;
 					Update(&indx);
 					Program[indx].Previous = prev;
+					Program[indx].ConditionResult = TRUE;
 				}
 				if(IsOutput(data)){
 					Type = OUT;
 				}
 				if(data == 'A'){ //TODO Falta pensar OR
 					and = TRUE;
-					inNumber++; // TODO cuando vuelve a 0???
+					inNumber++;
 					Type = CONDITION;
 				}
 				if(IsJump(data)){
-					conditionResult = !conditionResult;
-					if (conditionResult)
+					Program[indx].ConditionResult = !Program[indx].ConditionResult;
+					and = FALSE;
+					if (Program[indx].ConditionResult){
 						indx = Program[indx].Previous;
+						inNumber = 0;
+					}
 				}
 				outputType = data;
 				cont = 0;
@@ -171,16 +174,16 @@ void Process_Update(void)
 				if(cont == 2){
 					in = in + data - '1';
 
-					if(indx > 1 && !and){
-						prev = Program[indx].Previous;
+					prev = Program[indx].Previous;
+					if(prev != 0 && !and){
 						for(i = 0; Program[prev].Inputs[i] != 0; i++){
 							Program[indx].Inputs[i] = Program[prev].Inputs[i];
+							Program[indx].ValuesIn[i] = Program[prev].ValuesIn[i]  ^ !(Program[prev].ConditionResult);
 						}
 						inNumber = i;
 					}
 					Program[indx].Inputs[inNumber] = in;
 				}
-
 				if(cont == 3){
 					Program[indx].ValuesIn[inNumber] = data - '0';
 					cont = 0;
@@ -201,6 +204,7 @@ void Process_Update(void)
 					new->DestinoDelValor = dirValue;
 					new->Valor = Value;
 					new->nxt = 0;
+					conditionResult = Program[indx].ConditionResult;
 					if(Program[indx].Actions[conditionResult]){
 						for(aux = Program[indx].Actions[conditionResult]; aux->nxt != 0; aux = aux->nxt);
 						aux->nxt = new;

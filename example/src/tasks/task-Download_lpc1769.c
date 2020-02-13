@@ -70,7 +70,7 @@ void Uart_Rx_Update(void)
 {
 	uint8_t dataIn;
 	static uint8_t letra = 0;
-	char *String = {"CYO10L10XL11XF"};
+	char *String = {"CYO10AO20L10XYO30L11XXXF"};
 
 //	while(((Chip_UART_ReadLineStatus(UART_Def) & UART_LSR_RDR) != 0)) {
 //		dataIn = Chip_UART_ReadByte(UART_Def);

@@ -37,6 +37,7 @@ typedef struct act {
 
 typedef struct sys {
 	uint8_t Previous;
+	uint8_t ConditionResult;
 	uint8_t Inputs[INPUTSSIMULTANEOS];
 	uint8_t ValuesIn[INPUTSSIMULTANEOS];
 	Action*	Actions[2];
