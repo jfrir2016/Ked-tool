@@ -55,10 +55,10 @@ const uint32_t RTCOscRateIn = 32768;
 /* Initializes HW */
 void Board_HW_Init(void)
 {
-	Chip_IOCON_PinMux(LPC_IOCON, 0, 22, IOCON_MODE_INACT, IOCON_FUNC0);
-	Chip_IOCON_PinMux(LPC_IOCON, 3, 25, IOCON_MODE_INACT, IOCON_FUNC0);
-	Chip_IOCON_PinMux(LPC_IOCON, 3, 26, IOCON_MODE_INACT, IOCON_FUNC0);
-	Chip_IOCON_PinMux(LPC_IOCON, 2, 10, IOCON_MODE_INACT, IOCON_FUNC0);
+//	Chip_IOCON_PinMux(LPC_IOCON, 0, 22, IOCON_MODE_INACT, IOCON_FUNC0);
+//	Chip_IOCON_PinMux(LPC_IOCON, 3, 25, IOCON_MODE_INACT, IOCON_FUNC0);
+//	Chip_IOCON_PinMux(LPC_IOCON, 3, 26, IOCON_MODE_INACT, IOCON_FUNC0);
+//	Chip_IOCON_PinMux(LPC_IOCON, 2, 10, IOCON_MODE_INACT, IOCON_FUNC0);
 
 
 	//INICIALIZACION DE LAS SALIDAS
@@ -95,6 +95,9 @@ void Board_HW_Init(void)
 	Chip_IOCON_PinMux(LPC_IOCON, 1, 9, IOCON_MODE_INACT, IOCON_FUNC0);//Transistor_IR1
 	Chip_IOCON_PinMux(LPC_IOCON, 1, 10, IOCON_MODE_INACT, IOCON_FUNC0);//Transistor_IR2
 
+	Chip_IOCON_PinMux(LPC_IOCON, 2, 9, IOCON_MODE_INACT, IOCON_FUNC0);//Motor_1
+	Chip_IOCON_PinMux(LPC_IOCON, 0, 16, IOCON_MODE_INACT, IOCON_FUNC0);//Motor_2
+
 	//DISPLAY2
 	Chip_GPIO_WriteDirBit(LPC_GPIO, SEG_A_D2_PORT, SEG_A_D2_PIN, true);
 	Chip_GPIO_WriteDirBit(LPC_GPIO, SEG_B_D2_PORT, SEG_B_D2_PIN, true);
@@ -120,6 +123,9 @@ void Board_HW_Init(void)
 	//LEDS_IR
 	Chip_GPIO_WriteDirBit(LPC_GPIO, EMISOR_IR1_PORT, EMISOR_IR1_PIN, true);
 	Chip_GPIO_WriteDirBit(LPC_GPIO, EMISOR_IR2_PORT, EMISOR_IR2_PIN, true);
+	//MOTORES
+	Chip_GPIO_WriteDirBit(LPC_GPIO, M1_PORT, M1_PIN, true);
+	Chip_GPIO_WriteDirBit(LPC_GPIO, M2_PORT, M2_PIN, true);
 	//PB
 	Chip_GPIO_WriteDirBit(LPC_GPIO, PB1_PORT, PB1_PIN, false);
 	Chip_GPIO_WriteDirBit(LPC_GPIO, PB2_PORT, PB2_PIN, false);
@@ -141,18 +147,21 @@ void Board_HW_Set(){
 	Chip_GPIO_WritePortBit(LPC_GPIO, LED3_BLUE_PORT, LED3_BLUE_PIN, false);
 	Chip_GPIO_WritePortBit(LPC_GPIO, LED1_BLUE_PORT, LED1_BLUE_PIN, false);
 
-	Chip_GPIO_WritePortBit(LPC_GPIO, EMISOR_IR1_PORT, EMISOR_IR1_PIN, false);
-	Chip_GPIO_WritePortBit(LPC_GPIO, EMISOR_IR2_PORT, EMISOR_IR2_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, EMISOR_IR1_PORT, EMISOR_IR1_PIN, true);
+	Chip_GPIO_WritePortBit(LPC_GPIO, EMISOR_IR2_PORT, EMISOR_IR2_PIN, true);
 
-	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_A_D2_PORT, SEG_A_D2_PIN, false);
-	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_B_D2_PORT, SEG_B_D2_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, M1_PORT, M1_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, M2_PORT, M2_PIN, false);
+
+	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_A_D2_PORT, SEG_A_D2_PIN, true);
+	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_B_D2_PORT, SEG_B_D2_PIN, true);
 	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_C_D2_PORT, SEG_C_D2_PIN, false);
-	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_D_D2_PORT, SEG_D_D2_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_D_D2_PORT, SEG_D_D2_PIN, true);
 
-	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_A_D1_PORT, SEG_A_D1_PIN, false);
-	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_B_D1_PORT, SEG_B_D1_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_A_D1_PORT, SEG_A_D1_PIN, true);
+	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_B_D1_PORT, SEG_B_D1_PIN, true);
 	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_C_D1_PORT, SEG_C_D1_PIN, false);
-	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_D_D1_PORT, SEG_D_D1_PIN, false);
+	Chip_GPIO_WritePortBit(LPC_GPIO, SEG_D_D1_PORT, SEG_D_D1_PIN, true);
 }
 
 /*****************************************************************************

@@ -5,17 +5,14 @@
   --------------------------------------------------------------------
 
 - Detalle de funcionamiento de tarea
+Procesa la trama recibida y crea los enlaces entre las entradas y las salidas
+construyendo un programa.
 
 -*--------------------------------------------------------------------*/
 
-
 // Project header
 #include "task-Process_lpc1769.h"
-
 #include "../main/main.h"
-
-
-// Task header
 
 
 // ------ Global registers ----------------------------------------
@@ -45,15 +42,8 @@ extern uint8_t *ActionSensor1;
 extern uint8_t *ActionSensor2;
 
 // ------ Private varible ----------------------------------------
-
-
-// --- NUEVO!!! ------------
-
 uint8_t *DirSalidas[NOFOUTPUTS][2];
-
 System Program[NOFSYSTEMS];
-Action* Entradas[NOFINPUTS];
-uint8_t ValuesIn[NOFINPUTS];
 
 // ------ Private data type ----------------------------------------
 uint8_t *dirSet = 0;
@@ -61,21 +51,17 @@ uint8_t *dirValue = 0;
 uint8_t Value = 0;
 
 // ------ Public variable -----------------------------------------
-uint8_t Start_Process = 0;
-uint8_t Finish_Process = 0;
+uint8_t FirstTime;
 
 // ------ External variable -----------------------------------------
 extern uint8_t STATE;
 extern RINGBUFF_T rxring;
 
 /*------------------------------------------------------------------*-
-
     Process_Init()
 -*------------------------------------------------------------------*/
 void Process_Init(void)
 {
-	uint8_t i;
-
 	DirSalidas[0][0]	= &SetDisplay1;
 	DirSalidas[0][1] 	= &ValueDisplay1;
 	DirSalidas[1][0]	= &SetDisplay2;
@@ -96,14 +82,10 @@ void Process_Init(void)
 	DirSalidas[6][1] 	= &ValueLed2;
 	DirSalidas[7][1] 	= &ValueLed3;
 
-	for(i = 0; i < NOFINPUTS; i++){
-		Entradas[i] = 0;
-		ValuesIn[i] = 0;
-	}
+	ResetProgram();
 }
 
 /*------------------------------------------------------------------*-
-
     Process_Update()
 -*------------------------------------------------------------------*/
 void Process_Update(void)
@@ -115,21 +97,18 @@ void Process_Update(void)
 	static uint8_t and = FALSE;
 	static uint8_t indx = 0, in = 0, inNumber = 0;
 
-	//TODO implementar maquina de estados para procesar 					ok!
-	//TODO refrescar los registros cuando se inicia el proceso y
-	//     borrar el vector Program
-	//TODO muchas salidas en un solo condicional 							ok!
-	//TODO salidas sin condicional 											ok!
-	//TODO if y else														ok!
-	//TODO poder poner un condicional dentro de otro						ok!
-	//TODO implementar AND													ok!
-	//TODO implementar OR
-	//TODO implementar while, repeat, delay
+	if(FirstTime){
+		FirstTime = 0;
+		Type = START; and = FALSE;
+		cont = 0; outputType = 0; indx = 0;
+		in = 0; inNumber = 0;
+		ResetProgram();
+	}
 
 	if(STATE == PROCESS){
 		if(RingBuffer_Pop(&rxring, &data)){
 
-			switch (Type){				//C YO10 A O20 L10 X L11 X YO30 L34 X X F
+			switch (Type){
 			case START:
 				if(data == 'C'){
 					Type = DETECT;
@@ -150,7 +129,7 @@ void Process_Update(void)
 				if(IsOutput(data)){
 					Type = OUT;
 				}
-				if(data == 'A'){ //TODO Falta pensar OR
+				if(data == 'A'){
 					and = TRUE;
 					inNumber++;
 					Type = CONDITION;
@@ -190,7 +169,7 @@ void Process_Update(void)
 					Type = DETECT;
 				}
 				break;
-			case OUT: //TODO ver salidas particulares
+			case OUT:
 				cont++;
 				if (cont == 1){
 					dirSet = DirSalidas[(outputType -'G') + (data - '1')][SETEO];
@@ -220,10 +199,6 @@ void Process_Update(void)
 		}
 	}
 }
-
-//uint8_t Detection(uint8_t data){
-//
-//}
 
 uint8_t IsConditional(uint8_t data){
 	uint8_t ret = 0;
@@ -258,6 +233,32 @@ void Update(uint8_t *i){
 	(*i)++;
 	for(; Program[*i].Inputs[0] != 0; (*i)++);
 }
+
+void ResetProgram(){
+	uint8_t i, j;
+
+	for(i = 0; i < NOFSYSTEMS; i++){
+		for(j = 0; j < INPUTSSIMULTANEOS; j++){
+			Program[i].Inputs[j] = 0;
+			Program[i].ValuesIn[j] = 0;
+		}
+		Program[i].Actions[0]=0;
+		Program[i].Actions[1]=0;
+	}
+	Program[0].ConditionResult = 1;
+}
+
+	//TODO implementar maquina de estados para procesar 					ok!
+	//TODO refrescar los registros cuando se inicia el proceso y
+	//     borrar el vector Program
+	//TODO muchas salidas en un solo condicional 							ok!
+	//TODO salidas sin condicional 											ok!
+	//TODO if y else														ok!
+	//TODO poder poner un condicional dentro de otro						ok!
+	//TODO implementar AND													ok!
+	//TODO implementar OR
+	//TODO implementar while, repeat, delay
+
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------
 -*------------------------------------------------------------------*/

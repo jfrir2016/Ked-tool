@@ -45,30 +45,23 @@ uint8_t *ActionSensor1	= 0;
 uint8_t *ActionSensor2 	= 0;
 
 // ------ External variable -----------------------------------------
-extern Action* Entradas[NOFINPUTS];
-extern uint8_t ValuesIn[NOFINPUTS];
 extern System Program[NOFSYSTEMS];
 
 // ------ Private data type ----------------------------------------
 
-
 // ------ Global variable -----------------------------------------
-uint8_t STATE = DOWNLOAD; //RUN; TODO volver a poner RUN
+uint8_t STATE = RUN;
 
 /*------------------------------------------------------------------*-
-
     Run_Init()
 -*------------------------------------------------------------------*/
 void Run_Init(void)
 {
 	SetLed1 	= 1;
-	ValueLed1 	= 5;
-	SetDisplay2 = 1;
-	SetDisplay1 = 1;
+	ValueLed1 	= 0;
 }
 
 /*------------------------------------------------------------------*-
-
     Run_Update()
 -*------------------------------------------------------------------*/
 void Run_Update(void)
@@ -78,7 +71,7 @@ void Run_Update(void)
 
 		UpdateDisplays();
 		UpdateLeds();
-		//UpdateMotors(); TODO implementar
+		UpdateMotors();
 	}
 }
 
@@ -204,6 +197,16 @@ void UpdateDisplays(void){
 		Chip_GPIO_WritePortBit(LPC_GPIO, SEG_B_D2_PORT, SEG_B_D2_PIN, b);
 		Chip_GPIO_WritePortBit(LPC_GPIO, SEG_C_D2_PORT, SEG_C_D2_PIN, c);
 		Chip_GPIO_WritePortBit(LPC_GPIO, SEG_D_D2_PORT, SEG_D_D2_PIN, d);
+	}
+	return;
+}
+
+void UpdateMotors(void){
+	if(SetMotor1){
+		Chip_GPIO_WritePortBit(LPC_GPIO, M1_PORT, M1_PIN, SenseMotor1);
+	}
+	if(SetMotor2){
+		Chip_GPIO_WritePortBit(LPC_GPIO, M2_PORT, M2_PIN, SenseMotor2);
 	}
 	return;
 }

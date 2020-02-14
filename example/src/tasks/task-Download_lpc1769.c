@@ -41,6 +41,7 @@ Bool Send_StringTo_RBUart_Tx(void *, uint32_t);
 
 // ------ External variable -----------------------------------------
 extern uint8_t STATE;
+extern uint8_t FirstTime;
 
 /*------------------------------------------------------------------*-
 
@@ -54,7 +55,7 @@ void Uart_Rx_Init(void)
 
     /* Setup UART for 115.2K8N1 */
 	Chip_UART_Init(UART_Def);
-	Chip_UART_SetBaud(UART_Def, 115200);
+	Chip_UART_SetBaud(UART_Def, 9600);
 	Chip_UART_ConfigData(UART_Def, (UART_LCR_WLEN8 | UART_LCR_SBS_1BIT));
 	Chip_UART_TXEnable(UART_Def);
 
@@ -69,19 +70,17 @@ void Uart_Rx_Init(void)
 void Uart_Rx_Update(void)
 {
 	uint8_t dataIn;
-	static uint8_t letra = 0;
-	char *String = {"CYO10AO20L10XYO30L11XXXF"};
+//	static uint8_t letra = 0;
+//	char *String = {"CYS11I21XI20XYS21I11XI10XF"};
 
-//	while(((Chip_UART_ReadLineStatus(UART_Def) & UART_LSR_RDR) != 0)) {
-//		dataIn = Chip_UART_ReadByte(UART_Def);
-	if(STATE == DOWNLOAD){							//TODO Eliminar esto
-		dataIn = (uint8_t) String[letra];			//TODO    "      "
-		letra++;									//TODO    "     letra
-		RingBuffer_Insert(&rxring, &dataIn);
+	if(((Chip_UART_ReadLineStatus(UART_Def) & UART_LSR_RDR) != 0)) {
+		dataIn = Chip_UART_ReadByte(UART_Def);
 		STATE = DOWNLOAD;
+		if((dataIn >= 'A' && dataIn <= 'Z')||(dataIn >= '0' && dataIn <= '9'))
+			RingBuffer_Insert(&rxring, &dataIn);
 		if (dataIn == 'F'){
 			STATE = PROCESS;
-			letra = 0;
+			FirstTime = 1;
 		}
 	}
 }

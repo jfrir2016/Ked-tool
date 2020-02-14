@@ -40,7 +40,7 @@ uint8_t IsOutput(uint8_t);
 uint8_t IsJump(uint8_t);
 uint8_t IsLogic(uint8_t data);
 void Update(uint8_t*);
-
+void ResetProgram(void);
 
 // ------ Public function prototypes -------------------------------
 void Process_Init(void);

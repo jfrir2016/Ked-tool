@@ -60,12 +60,12 @@
 #define SEG_D_D1_PIN		4
 
 //LED RGB_1
-#define LED1_RED_PORT		0	//0 TODO BORRAR!!! SOLO PARA STICK
-#define LED1_RED_PIN		22	//17
-#define LED1_BLUE_PORT		3	//0
-#define LED1_BLUE_PIN		26	//18
-#define LED1_GREEN_PORT		3	//2
-#define LED1_GREEN_PIN		25	//8
+#define LED1_RED_PORT		0//0	//0 TODO BORRAR!!! SOLO PARA STICK
+#define LED1_RED_PIN		17//22	//17
+#define LED1_BLUE_PORT		0//3	//0
+#define LED1_BLUE_PIN		18//26	//18
+#define LED1_GREEN_PORT		2//3	//2
+#define LED1_GREEN_PIN		8//25	//8
 
 //LED RGB_2
 #define LED2_GREEN_PORT		0
@@ -96,15 +96,20 @@
 #define TR_IR2_PIN			10
 
 //BUTTONS
-#define PB1_PORT			2	//0
-#define PB1_PIN				10	//8
-#define PB2_PORT			0
-#define PB2_PIN				6
-#define PB3_PORT			0
-#define PB3_PIN				7
-#define PB4_PORT			0
-#define PB4_PIN				5
+#define PB1_PORT			0//2	//0
+#define PB1_PIN				8//10	//8
+#define PB2_PORT			0//0	//0
+#define PB2_PIN				6//18	//6
+#define PB3_PORT			0//0	//0
+#define PB3_PIN				7//11	//7
+#define PB4_PORT			0//2	//0
+#define PB4_PIN				5//13	//5
 
+//MOTORES
+#define M1_PORT				2
+#define M1_PIN				9
+#define M2_PORT				0
+#define M2_PIN				16
 
 // ------ Public data type -----------------------------------------
 

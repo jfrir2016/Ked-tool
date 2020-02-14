@@ -55,6 +55,7 @@ Bool ReadInput(uint8_t);
 
 void UpdateDisplays(void);
 void UpdateLeds(void);
+void UpdateMotors(void);
 
 #endif /* SRC_TASKS_TASK_RUN_LPC1769_H_ */
 /*------------------------------------------------------------------*-
