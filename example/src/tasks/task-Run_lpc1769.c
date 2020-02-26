@@ -16,18 +16,18 @@
 
 // Task header
 // ------ Set registers ------------------------------------------
-uint8_t SetLed1 	= 1;
+uint8_t SetLed1 	= 0;
 uint8_t SetLed2 	= 0;
 uint8_t SetLed3 	= 0;
 uint8_t Display 	= 0;
 uint8_t SetMotor1	= 0;
 uint8_t SetMotor2 	= 0;
 uint8_t SetDisplay1 = 0;
-uint8_t SetDisplay2 = 1;
+uint8_t SetDisplay2 = 0;
 uint8_t SetServo 	= 0;
 
 // ------ Value registers ----------------------------------------
-uint8_t ValueLed1 	= 5;
+uint8_t ValueLed1 	= 0;
 uint8_t ValueLed2 	= 0;
 uint8_t ValueLed3 	= 0;
 uint8_t SenseMotor1	= 0;
@@ -45,62 +45,100 @@ uint8_t *ActionSensor1	= 0;
 uint8_t *ActionSensor2 	= 0;
 
 // ------ External variable -----------------------------------------
-extern Action* Entradas[6];
-extern uint8_t ValuesIn[6];
+extern System Program[NOFSYSTEMS];
 
 // ------ Private data type ----------------------------------------
-
 
 // ------ Global variable -----------------------------------------
 uint8_t STATE = RUN;
 
 /*------------------------------------------------------------------*-
-
     Run_Init()
 -*------------------------------------------------------------------*/
 void Run_Init(void)
 {
-
+	SetLed2 	= 1;
+	ValueLed2 	= 0;
+	SetLed1 	= 1;
+	ValueLed1 	= 2;
 }
 
 /*------------------------------------------------------------------*-
-
     Run_Update()
 -*------------------------------------------------------------------*/
 void Run_Update(void)
 {
 	if(STATE == RUN) {
-		UpdateButtons();
+		UpdateProgram();
+
 		UpdateDisplays();
 		UpdateLeds();
+		UpdateMotors();
 	}
 }
 
-void UpdateButtons(void){
-	uint8_t state;
+void UpdateProgram(void){
+	uint8_t sys;
+	Action *aux;
 
-	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB1_PORT, PB1_PIN);
-	if(state == ValuesIn[0] && Entradas[0] != 0){
-		*Entradas[0]->Destino = 1;
-		*Entradas[0]->ValorDestino = Entradas[0]->Valor;
+	UpdateFree();
+	for(sys = 1; Program[sys].Inputs[0] != 0; sys++){
+		if (ComplyAllConditions(sys)){
+			for(aux = Program[sys].Actions[TRUE]; aux != 0; aux = aux->nxt){
+				*aux->Destino = 1;
+				*aux->DestinoDelValor = aux->Valor;
+			}
+		} else {
+			for(aux = Program[sys].Actions[FALSE]; aux != 0; aux = aux->nxt){
+				*aux->Destino = 1;
+				*aux->DestinoDelValor = aux->Valor;
+			}
+		}
 	}
+}
 
-	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB2_PORT, PB2_PIN);
-	if(state == ValuesIn[1] && Entradas[1] != 0){
-		*Entradas[1]->Destino = 1;
-		*Entradas[1]->ValorDestino = Entradas[1]->Valor;
+Bool ComplyAllConditions(uint8_t sys){
+	uint8_t i;
+
+	for(i = 0; Program[sys].Inputs[i] != 0; i++){
+		if(ReadInput(Program[sys].Inputs[i]) != Program[sys].ValuesIn[i])
+			return FALSE;
 	}
+	return TRUE;
+}
 
-	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB3_PORT, PB3_PIN);
-	if(state == ValuesIn[2] && Entradas[2] != 0){
-		*Entradas[2]->Destino = 1;
-		*Entradas[2]->ValorDestino = Entradas[2]->Valor;
+Bool ReadInput(uint8_t input){
+	Bool state;
+
+	switch(input){
+	case BUTTON1:
+		state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB1_PORT, PB1_PIN);
+		break;
+	case BUTTON2:
+		state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB2_PORT, PB2_PIN);
+		break;
+	case BUTTON3:
+		state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB3_PORT, PB3_PIN);
+		break;
+	case BUTTON4:
+		state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB4_PORT, PB4_PIN);
+		break;
+	case SENSOR1:
+		state = Chip_GPIO_ReadPortBit(LPC_GPIO, TR_IR1_PORT, TR_IR1_PIN);
+		break;
+	case SENSOR2:
+		state = Chip_GPIO_ReadPortBit(LPC_GPIO, TR_IR2_PORT, TR_IR2_PIN);
+		break;
 	}
+	return state;
+}
 
-	state = Chip_GPIO_ReadPortBit(LPC_GPIO, PB4_PORT, PB4_PIN);
-	if(state == ValuesIn[3] && Entradas[3] != 0){
-		*Entradas[3]->Destino = 1;
-		*Entradas[3]->ValorDestino = Entradas[3]->Valor;
+void UpdateFree(){
+	Action *aux;
+
+	for(aux = Program[0].Actions[TRUE]; aux != 0; aux = aux->nxt){
+		*aux->Destino = 1;
+		*aux->DestinoDelValor = aux->Valor;
 	}
 }
 
@@ -161,6 +199,16 @@ void UpdateDisplays(void){
 		Chip_GPIO_WritePortBit(LPC_GPIO, SEG_B_D2_PORT, SEG_B_D2_PIN, b);
 		Chip_GPIO_WritePortBit(LPC_GPIO, SEG_C_D2_PORT, SEG_C_D2_PIN, c);
 		Chip_GPIO_WritePortBit(LPC_GPIO, SEG_D_D2_PORT, SEG_D_D2_PIN, d);
+	}
+	return;
+}
+
+void UpdateMotors(void){
+	if(SetMotor1){
+		Chip_GPIO_WritePortBit(LPC_GPIO, M1_PORT, M1_PIN, SenseMotor1);
+	}
+	if(SetMotor2){
+		Chip_GPIO_WritePortBit(LPC_GPIO, M2_PORT, M2_PIN, SenseMotor2);
 	}
 	return;
 }

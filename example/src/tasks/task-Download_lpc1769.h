@@ -21,8 +21,9 @@
 
 
 // ------ Public function prototypes -------------------------------
-void Uart_Init(void);
+void Uart_Rx_Init(void);
 void  Uart_Rx_Update(void);
+void BlinkyLed(void);
 #endif
 
 /*------------------------------------------------------------------*-

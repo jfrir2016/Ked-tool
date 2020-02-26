@@ -5,17 +5,14 @@
   --------------------------------------------------------------------
 
 - Detalle de funcionamiento de tarea
+Procesa la trama recibida y crea los enlaces entre las entradas y las salidas
+construyendo un programa.
 
 -*--------------------------------------------------------------------*/
 
-
 // Project header
 #include "task-Process_lpc1769.h"
-
 #include "../main/main.h"
-
-
-// Task header
 
 
 // ------ Global registers ----------------------------------------
@@ -45,14 +42,8 @@ extern uint8_t *ActionSensor1;
 extern uint8_t *ActionSensor2;
 
 // ------ Private varible ----------------------------------------
-uint8_t Type;
-
-// --- NUEVO!!! ------------
-
-uint8_t *DirSalidas[8][2];
-
-Action* Entradas[6];
-uint8_t ValuesIn[6];
+uint8_t *DirSalidas[NOFOUTPUTS][2];
+System Program[NOFSYSTEMS];
 
 // ------ Private data type ----------------------------------------
 uint8_t *dirSet = 0;
@@ -60,15 +51,13 @@ uint8_t *dirValue = 0;
 uint8_t Value = 0;
 
 // ------ Public variable -----------------------------------------
-uint8_t Start_Process = 0;
-uint8_t Finish_Process = 0;
+uint8_t FirstTime;
 
 // ------ External variable -----------------------------------------
 extern uint8_t STATE;
 extern RINGBUFF_T rxring;
 
 /*------------------------------------------------------------------*-
-
     Process_Init()
 -*------------------------------------------------------------------*/
 void Process_Init(void)
@@ -92,26 +81,29 @@ void Process_Init(void)
 	DirSalidas[5][1] 	= &ValueLed1;
 	DirSalidas[6][1] 	= &ValueLed2;
 	DirSalidas[7][1] 	= &ValueLed3;
+
+	ResetProgram();
 }
 
 /*------------------------------------------------------------------*-
-
     Process_Update()
 -*------------------------------------------------------------------*/
 void Process_Update(void)
 {
-	uint8_t data;
-	static uint8_t cont = 0;
-	static uint8_t hard = 0;
-	static uint8_t indx = 0;
+	uint8_t data, prev, i, conditionResult;
+	Action *new, *aux;
+	static uint8_t Type = START;
+	static uint8_t cont = 0, outputType = 0;
+	static uint8_t and = FALSE;
+	static uint8_t indx = 0, in = 0, inNumber = 0;
 
-	//TODO implementar maquina de estados para procesar
-	//TODO refrescar los registros cuando se inicia el proceso
-
-	//TODO muchas salidas en un solo condicional
-	//TODO salidas sin condicional
-	//TODO poder poner un condicional dentro de otro
-	//TODO implementar while, repeat, delay
+	if(FirstTime){
+		FirstTime = 0;
+		Type = START; and = FALSE;
+		cont = 0; outputType = 0; indx = 0;
+		in = 0; inNumber = 0;
+		ResetProgram();
+	}
 
 	if(STATE == PROCESS){
 		if(RingBuffer_Pop(&rxring, &data)){
@@ -124,72 +116,150 @@ void Process_Update(void)
 				break;
 			case DETECT:
 				if(data == 'F'){
-					Type = FINISH;
+					Type = START;
+					STATE = RUN;
 				}
 				if(IsConditional(data)){
 					Type = CONDITION;
+					prev = indx;
+					Update(&indx);
+					Program[indx].Previous = prev;
+					Program[indx].ConditionResult = TRUE;
 				}
 				if(IsOutput(data)){
 					Type = OUT;
 				}
-				hard = data;
+				if(data == 'A'){
+					and = TRUE;
+					inNumber++;
+					Type = CONDITION;
+				}
+				if(IsJump(data)){
+					Program[indx].ConditionResult = !Program[indx].ConditionResult;
+					and = FALSE;
+					if (Program[indx].ConditionResult){
+						indx = Program[indx].Previous;
+						inNumber = 0;
+					}
+				}
+				outputType = data;
 				cont = 0;
 				break;
 			case CONDITION:
-				if(cont == 0){
-					indx = data - 'O';
-					cont++;
-				}
-				if(cont == 1){
-					indx = indx + data - '1';
-					Entradas[indx] = malloc(sizeof(Action));
-					cont++;
-				}
+				cont++;
+				if(cont == 1)
+					in = data - 'N';
+
 				if(cont == 2){
-					ValuesIn[indx] = data - '0';
+					in = in + data - '1';
+
+					prev = Program[indx].Previous;
+					if(prev != 0 && !and){
+						for(i = 0; Program[prev].Inputs[i] != 0; i++){
+							Program[indx].Inputs[i] = Program[prev].Inputs[i];
+							Program[indx].ValuesIn[i] = Program[prev].ValuesIn[i]  ^ !(Program[prev].ConditionResult);
+						}
+						inNumber = i;
+					}
+					Program[indx].Inputs[inNumber] = in;
+				}
+				if(cont == 3){
+					Program[indx].ValuesIn[inNumber] = data - '0';
 					cont = 0;
 					Type = DETECT;
 				}
 				break;
 			case OUT:
-				if (cont == 0){
-					dirSet = DirSalidas[(hard -'G') + (data - '1')][SETEO];
-					dirValue = DirSalidas[(hard -'G') + (data - '1')][VALUE];
-					cont++;
+				cont++;
+				if (cont == 1){
+					dirSet = DirSalidas[(outputType -'G') + (data - '1')][SETEO];
+					dirValue = DirSalidas[(outputType -'G') + (data - '1')][VALUE];
 					break;
 				}
-				if(cont == 1){
+				if(cont == 2){
 					Value = (data - '0');
+					new = (Action*) malloc(sizeof(Action));
+					new->Destino = dirSet;
+					new->DestinoDelValor = dirValue;
+					new->Valor = Value;
+					new->nxt = 0;
+					conditionResult = Program[indx].ConditionResult;
+					if(Program[indx].Actions[conditionResult]){
+						for(aux = Program[indx].Actions[conditionResult]; aux->nxt != 0; aux = aux->nxt);
+						aux->nxt = new;
+					}
+					else{
+						Program[indx].Actions[conditionResult] = new;
+					}
 					cont = 0;
-					Entradas[indx]->Destino = dirSet;
-					Entradas[indx]->ValorDestino = dirValue;
-					Entradas[indx]->Valor = Value;
-					Entradas[indx]->nxt = 0;
 					Type = DETECT;
 				}
 				break;
-			case FINISH:
-				Type = START;
-				STATE = RUN;
 			}
+			BlinkyLed();
 		}
 	}
 }
 
 uint8_t IsConditional(uint8_t data){
 	uint8_t ret = 0;
-	if(data == 'I' || data == 'R' || data == 'W'){
+	if(data == 'W' || data == 'Y' || data == 'Z'){
 		ret = 1;
 	}
 	return ret;
 }
 
 uint8_t IsOutput(uint8_t data){
-	if(data == 'M' || data == 'Z' || data == 'L' || data == 'G'){
+	if(data == 'G' || data == 'I' || data == 'K' || data == 'L'){
 		return 1;
 	}
 	return 0;
 }
+
+uint8_t IsJump(uint8_t data){
+	if(data == 'X'){
+		return 1;
+	}
+	return 0;
+}
+
+uint8_t IsLogic(uint8_t data){
+	if(data == 'A' || data == 'B'){
+		return 1;
+	}
+	return 0;
+}
+
+void Update(uint8_t *i){
+	(*i)++;
+	for(; Program[*i].Inputs[0] != 0; (*i)++);
+}
+
+void ResetProgram(){
+	uint8_t i, j;
+
+	for(i = 0; i < NOFSYSTEMS; i++){
+		for(j = 0; j < INPUTSSIMULTANEOS; j++){
+			Program[i].Inputs[j] = 0;
+			Program[i].ValuesIn[j] = 0;
+		}
+		Program[i].Actions[0]=0;
+		Program[i].Actions[1]=0;
+	}
+	Program[0].ConditionResult = 1;
+}
+
+	//TODO implementar maquina de estados para procesar 					ok!
+	//TODO refrescar los registros cuando se inicia el proceso y
+	//     borrar el vector Program
+	//TODO muchas salidas en un solo condicional 							ok!
+	//TODO salidas sin condicional 											ok!
+	//TODO if y else														ok!
+	//TODO poder poner un condicional dentro de otro						ok!
+	//TODO implementar AND													ok!
+	//TODO implementar OR
+	//TODO implementar while, repeat, delay
+
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------
 -*------------------------------------------------------------------*/
