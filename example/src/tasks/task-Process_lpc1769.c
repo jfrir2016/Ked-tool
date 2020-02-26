@@ -196,6 +196,7 @@ void Process_Update(void)
 				}
 				break;
 			}
+			BlinkyLed();
 		}
 	}
 }

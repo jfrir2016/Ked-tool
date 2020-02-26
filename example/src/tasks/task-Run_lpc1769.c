@@ -57,8 +57,10 @@ uint8_t STATE = RUN;
 -*------------------------------------------------------------------*/
 void Run_Init(void)
 {
+	SetLed2 	= 1;
+	ValueLed2 	= 0;
 	SetLed1 	= 1;
-	ValueLed1 	= 0;
+	ValueLed1 	= 2;
 }
 
 /*------------------------------------------------------------------*-
@@ -148,27 +150,27 @@ void UpdateLeds(void){
 		blue = ValueLed1 & (1<<1);
 		green = ValueLed1 & (1<<0);
 
-		Chip_GPIO_WritePortBit(LPC_GPIO, LED1_RED_PORT, LED1_RED_PIN, !red);
-		Chip_GPIO_WritePortBit(LPC_GPIO, LED1_BLUE_PORT, LED1_BLUE_PIN, !blue);
-		Chip_GPIO_WritePortBit(LPC_GPIO, LED1_GREEN_PORT, LED1_GREEN_PIN, !green);
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED1_RED_PORT, LED1_RED_PIN, red);
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED1_BLUE_PORT, LED1_BLUE_PIN, blue);
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED1_GREEN_PORT, LED1_GREEN_PIN, green);
 	}
 	if(SetLed2){
 		red = ValueLed2 & (1<<2);
 		blue = ValueLed2 & (1<<1);
 		green = ValueLed2 & (1<<0);
 
-		Chip_GPIO_WritePortBit(LPC_GPIO, LED2_RED_PORT, LED2_RED_PIN, !red);
-		Chip_GPIO_WritePortBit(LPC_GPIO, LED2_BLUE_PORT, LED2_BLUE_PIN, !blue);
-		Chip_GPIO_WritePortBit(LPC_GPIO, LED2_GREEN_PORT, LED2_GREEN_PIN, !green);
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED2_RED_PORT, LED2_RED_PIN, red);
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED2_BLUE_PORT, LED2_BLUE_PIN, blue);
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED2_GREEN_PORT, LED2_GREEN_PIN, green);
 	}
 	if(SetLed3){
 		red = ValueLed3 & (1<<2);
 		blue = ValueLed3 & (1<<1);
 		green = ValueLed3 & (1<<0);
 
-		Chip_GPIO_WritePortBit(LPC_GPIO, LED3_RED_PORT, LED3_RED_PIN, !red);
-		Chip_GPIO_WritePortBit(LPC_GPIO, LED3_BLUE_PORT, LED3_BLUE_PIN, !blue);
-		Chip_GPIO_WritePortBit(LPC_GPIO, LED3_GREEN_PORT, LED3_GREEN_PIN, !green);
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED3_RED_PORT, LED3_RED_PIN, red);
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED3_BLUE_PORT, LED3_BLUE_PIN, blue);
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED3_GREEN_PORT, LED3_GREEN_PIN, green);
 	}
 	return;
 }

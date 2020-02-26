@@ -76,12 +76,26 @@ void Uart_Rx_Update(void)
 	if(((Chip_UART_ReadLineStatus(UART_Def) & UART_LSR_RDR) != 0)) {
 		dataIn = Chip_UART_ReadByte(UART_Def);
 		STATE = DOWNLOAD;
+		BlinkyLed();
 		if((dataIn >= 'A' && dataIn <= 'Z')||(dataIn >= '0' && dataIn <= '9'))
 			RingBuffer_Insert(&rxring, &dataIn);
 		if (dataIn == 'F'){
 			STATE = PROCESS;
 			FirstTime = 1;
 		}
+	}
+}
+
+void BlinkyLed(){
+	static uint8_t a = 0;
+
+	if(STATE == DOWNLOAD){
+		a = !a;
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED3_RED_PORT, LED3_RED_PIN, a);
+	}
+	if(STATE == PROCESS){
+		a = !a;
+		Chip_GPIO_WritePortBit(LPC_GPIO, LED3_BLUE_PORT, LED3_BLUE_PIN, a);
 	}
 }
 
